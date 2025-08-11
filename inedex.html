@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>中学への道は いくつもあるよ｜親→小3プレゼン</title>
+<style>
+  :root{
+    --bg:#f7efe1;
+    --paper:#fffaf1;
+    --ink:#3b2c26;
+    --accent:#5c9d7c;
+    --accent-2:#f2b84b;
+    --muted:#7a6f68;
+  }
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  /* Stage */
+  .deck{
+    height:100dvh; display:grid; grid-template-rows:auto 1fr auto;
+    overflow:hidden;
+  }
+  header, footer{
+    display:flex; align-items:center; gap:.75rem;
+    padding:.5rem 1rem; color:var(--muted);
+  }
+  header{justify-content:space-between;}
+  .brand{font-weight:700; letter-spacing:.02em;}
+  .controls{display:flex; gap:.5rem; align-items:center;}
+  .btn{
+    appearance:none; border:1px solid #0000; background:var(--ink); color:#fff;
+    padding:.5rem .9rem; border-radius:.6rem; font-weight:700; cursor:pointer;
+  }
+  .btn.secondary{background:#0000; color:var(--ink); border-color:#d9cdbf}
+  .btn:disabled{opacity:.45; cursor:not-allowed}
+  .progress{flex:1; height:.5rem; background:#eadfce; border-radius:999px; overflow:hidden}
+  .progress>i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+
+  /* Slides */
+  .slides{
+    position:relative; overflow:hidden; container-type:inline-size;
+  }
+  .slide{
+    position:absolute; inset:0; padding:2.2rem clamp(1rem,4cqi,2rem);
+    display:grid; grid-template-rows:auto 1fr; gap:1rem;
+    background:var(--paper); border-radius:18px 18px 0 0;
+    box-shadow: 0 12px 40px rgba(0,0,0,.08) inset;
+    transform:translateX(100%); opacity:0; transition:transform .55s cubic-bezier(.2,.8,.2,1), opacity .4s ease;
+  }
+  .slide[aria-hidden="false"]{transform:translateX(0); opacity:1}
+  .slide.prev{transform:translateX(-100%)}
+  h1,h2{margin:0; line-height:1.25}
+  h1{font-size:clamp(1.8rem, 5cqi, 3.2rem);}
+  h2{font-size:clamp(1.4rem, 4cqi, 2.2rem);}
+  p,li{font-size:clamp(1rem, 2.8cqi, 1.25rem); line-height:1.6}
+  ul{margin:0; padding-left:1.2em}
+  .grid{display:grid; gap:1.2rem;}
+  @container (min-width:720px){
+    .split{grid-template-columns:1.2fr 1fr; align-items:center}
+  }
+  .card{
+    background:#fff; border:1px solid #efe3d2; border-radius:14px; padding:1rem 1.2rem;
+  }
+  .table{border-collapse:separate; border-spacing:0 .6rem; width:100%;}
+  .table tr{background:#fff;}
+  .table td, .table th{padding:.7rem 1rem; vertical-align:top;}
+  .table th{white-space:nowrap; color:#4d4039;}
+  .pill{
+    display:inline-block; padding:.2rem .6rem; border-radius:999px; background:#ece2d2; font-weight:700; font-size:.9em;
+  }
+
+  /* SVG helpers */
+  .hero{display:grid; place-items:center; padding: .6rem;}
+  svg{max-width:100%; height:auto}
+  .muted{color:var(--muted)}
+
+  /* Dots */
+  .dots{display:flex; gap:.4rem; align-items:center}
+  .dot{
+    width:.6rem; height:.6rem; border-radius:50%; background:#d9cdbf; border:0;
+  }
+  .dot[aria-current="true"]{background:var(--accent)}
+
+  /* Print (to PDF A4 landscape) */
+  @media print{
+    body{background:#fff}
+    header, footer{display:none}
+    .slides{gap:0}
+    .slide{
+      position:static; transform:none !important; opacity:1 !important; page-break-after:always;
+      height:190mm; /* inside A4 landscape (210x297) with margins */
+      padding:16mm 18mm;
+    }
+  }
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    .slide{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="deck" role="application" aria-label="中学進路スライド">
+  <header>
+    <div class="brand">親→子プレゼン｜小3向け</div>
+    <div class="controls">
+      <button class="btn secondary" id="btnPrev" aria-label="前のスライド">←</button>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <button class="btn" id="btnNext" aria-label="次のスライド">次へ →</button>
+      <button class="btn secondary" id="btnPrint" title="印刷/保存（PDF可）">印刷</button>
+    </div>
+  </header>
+
+  <main class="slides" id="slides">
+    <!-- 1 -->
+    <section class="slide" data-title="タイトル" aria-hidden="false">
+      <h1>中学への道は <span class="pill">いくつも</span> あるよ</h1>
+      <div class="grid split">
+        <div class="card">
+          <p>これから「中学ってどんなところ？」「公立と私立のちがい」「夢の見つけやすさ」を、やさしくお話しするスライドだよ。</p>
+          <p class="muted">※ きょうの目的：<b>自分でえらぶ力</b>をいっしょに育てること。</p>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- Crossroads sign SVG -->
+          <svg viewBox="0 0 640 360">
+            <defs>
+              <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#cfe8d9"/><stop offset="1" stop-color="#f6ead2"/>
+              </linearGradient>
+            </defs>
+            <rect width="640" height="360" rx="18" fill="url(#g)"/>
+            <path d="M70 320c110-80 390-80 500 0" fill="none" stroke="#caa86a" stroke-width="18" stroke-linecap="round"/>
+            <g transform="translate(180,140)">
+              <rect x="-90" y="-28" width="180" height="56" rx="10" fill="#b9874b"/><rect x="-92" y="-30" width="184" height="60" rx="12" fill="none" stroke="#845f36" stroke-width="4"/>
+              <text x="0" y="8" font-size="28" text-anchor="middle" fill="#fff">公立</text>
+            </g>
+            <g transform="translate(460,200)">
+              <rect x="-90" y="-28" width="180" height="56" rx="10" fill="#b9874b"/><rect x="-92" y="-30" width="184" height="60" rx="12" fill="none" stroke="#845f36" stroke-width="4"/>
+              <text x="0" y="8" font-size="28" text-anchor="middle" fill="#fff">私立</text>
+            </g>
+            <rect x="312" y="100" width="16" height="170" rx="8" fill="#845f36"/>
+            <circle cx="320" cy="90" r="12" fill="#845f36"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide" data-title="中学ってどんなところ？" aria-hidden="true">
+      <h2>中学ってどんなところ？</h2>
+      <div class="grid split">
+        <div>
+          <ul>
+            <li>小学校のつぎに行く場所。少し大人の世界！</li>
+            <li>勉強や部活が<strong>本格的</strong>になる。</li>
+            <li>新しい友だちや先生とたくさん出会える。</li>
+          </ul>
+          <p class="muted">→ ここから<strong>自分の好き</strong>を広げていけるよ。</p>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- School SVG -->
+          <svg viewBox="0 0 640 360">
+            <rect width="640" height="360" rx="18" fill="#e7f1ea"/>
+            <g transform="translate(120,90)">
+              <rect width="400" height="180" rx="12" fill="#fff"/>
+              <rect x="180" y="-30" width="40" height="60" fill="#f2b84b"/>
+              <rect x="190" y="-50" width="20" height="20" fill="#3b2c26"/>
+              <rect x="200" y="-80" width="4" height="30" fill="#3b2c26"/>
+              <g fill="#dfe6f3">
+                <rect x="40" y="30" width="70" height="50" rx="6"/>
+                <rect x="140" y="30" width="70" height="50" rx="6"/>
+                <rect x="240" y="30" width="70" height="50" rx="6"/>
+                <rect x="40" y="100" width="70" height="50" rx="6"/>
+                <rect x="240" y="100" width="70" height="50" rx="6"/>
+              </g>
+              <rect x="170" y="100" width="60" height="80" rx="6" fill="#5c9d7c"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide" data-title="2つの道" aria-hidden="true">
+      <h2>中学へ行く道は <b>2つ</b> あるよ</h2>
+      <div class="grid split">
+        <div class="card">
+          <p><span class="pill">公立中学校</span> …… 近くの学校。地元の友だちが集まる。</p>
+          <p><span class="pill">私立中学校</span> …… 試験を受けて入る。<b>自分の希望や夢</b>に合った学校を選べる。</p>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- Two paths -->
+          <svg viewBox="0 0 640 360">
+            <rect width="640" height="360" rx="18" fill="#f2efe6"/>
+            <path d="M320,340 C320,240 150,240 120,120" stroke="#caa86a" stroke-width="20" fill="none"/>
+            <path d="M320,340 C320,240 490,240 520,120" stroke="#caa86a" stroke-width="20" fill="none"/>
+            <g fill="#b9874b">
+              <rect x="80" y="95" width="120" height="40" rx="8"/><rect x="440" y="95" width="120" height="40" rx="8"/>
+            </g>
+            <text x="140" y="122" text-anchor="middle" font-size="22" fill="#fff">公立</text>
+            <text x="500" y="122" text-anchor="middle" font-size="22" fill="#fff">私立</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide" data-title="公立と私立のちがい" aria-hidden="true">
+      <h2>公立と私立のちがい（やさしい版）</h2>
+      <table class="table card" aria-label="公立と私立の違い">
+        <tr><th>ちがい</th><th>公立</th><th>私立</th></tr>
+        <tr><th>行き方</th><td>基本は学区で入学</td><td>入試を受けて入学</td></tr>
+        <tr><th>友だち</th><td>地元中心</td><td>いろんな地域から集まる</td></tr>
+        <tr><th>勉強</th><td>学校によってペースがちがう</td><td>学校ごとの<strong>特色・専門性</strong>がはっきり</td></tr>
+        <tr><th>夢のヒント</th><td>先生や授業からもらえることも。<br>ただ<strong>自分から探す力</strong>がより大切。</td>
+            <td>カリキュラムや仲間との交流の中で、<br><strong>夢の種が見えやすく育ちやすい</strong>。</td></tr>
+      </table>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide" data-title="夢の見つけやすさ" aria-hidden="true">
+      <h2>「夢の見つけやすさ」の お話</h2>
+      <div class="grid split">
+        <div>
+          <p><b>公立でも夢は見つけられる。</b> ただ、人や出来事が多くて、<u>ヒントが埋もれてしまう</u>ことも。</p>
+          <p><b>私立は見つけやすい。</b> 同じ志の仲間、特別な授業、体験学習など、<u>手に取りやすい場所</u>にヒントが並ぶことが多い。</p>
+          <p class="muted">宝探しで言うと…<br>公立＝広い砂浜にある宝。私立＝地図と仲間がそろった宝箱。</p>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- Treasure metaphor -->
+          <svg viewBox="0 0 640 360">
+            <rect width="640" height="360" rx="18" fill="#eaf5ff"/>
+            <circle cx="480" cy="120" r="70" fill="#ffe28a"/>
+            <rect x="430" y="170" width="120" height="70" rx="8" fill="#b9874b"/>
+            <rect x="430" y="152" width="120" height="30" rx="8" fill="#845f36"/>
+            <g fill="#ffd24d"><circle cx="460" cy="190" r="6"/><circle cx="500" cy="200" r="6"/><circle cx="540" cy="190" r="6"/></g>
+            <path d="M80 300c80-40 140-40 220 0" stroke="#caa86a" stroke-width="18" fill="none"/>
+            <circle cx="140" cy="286" r="8" fill="#845f36"/>
+            <path d="M140 286 L160 250" stroke="#845f36" stroke-width="4"/>
+            <rect x="150" y="230" width="30" height="16" rx="3" fill="#b9874b"/>
+            <text x="480" y="80" text-anchor="middle" font-size="20" fill="#3b2c26">夢のヒントが見つかりやすい</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide" data-title="親の気持ち" aria-hidden="true">
+      <h2>お母さん・お父さんの気持ち</h2>
+      <div class="grid split">
+        <div class="card">
+          <ul>
+            <li>あなたの性格・得意を見て、<b>私立ならもっと伸びそう</b>だと感じている。</li>
+            <li>将来の夢を見つけるチャンスを増やしてほしい。</li>
+            <li>でも<strong>最後に決めるのはあなた</strong>。いっしょに考えよう。</li>
+          </ul>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- Parent & child -->
+          <svg viewBox="0 0 640 360">
+            <rect width="640" height="360" rx="18" fill="#f0f7f2"/>
+            <g transform="translate(200,120)" fill="#f2b84b">
+              <circle cx="0" cy="0" r="26"/><circle cx="90" cy="0" r="22"/>
+              <rect x="-20" y="24" width="40" height="80" rx="10" fill="#5c9d7c"/>
+              <rect x="70" y="24" width="40" height="70" rx="10" fill="#5c9d7c"/>
+            </g>
+            <text x="320" y="320" text-anchor="middle" font-size="18" fill="#3b2c26">いっしょに未来をえらんでいこう</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide" data-title="私立に行くには" aria-hidden="true">
+      <h2>私立中学に行くためには？</h2>
+      <div class="grid split">
+        <div>
+          <ul>
+            <li><b>小6の1月ごろ</b>に入試（学校により異なる）。</li>
+            <li>毎日の積み重ねが大事。<b>努力の習慣</b>をつくろう。</li>
+            <li>見学・体験で「ここが好き！」を確かめよう。</li>
+          </ul>
+          <div class="card">
+            <b>いまからできること（小3〜）</b>
+            <ul>
+              <li>読書・計算・ことば遊びを日課に</li>
+              <li>理科実験や社会見学で「なぜ？」を広げる</li>
+              <li>早寝早起き・運動・手伝いで生活リズム</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hero" aria-hidden="true">
+          <!-- Finish line -->
+          <svg viewBox="0 0 640 360">
+            <rect width="640" height="360" rx="18" fill="#fff3df"/>
+            <path d="M80 300c120-50 280-50 480 0" stroke="#f2b84b" stroke-width="20" fill="none"/>
+            <rect x="260" y="110" width="120" height="70" rx="6" fill="#5c9d7c"/>
+            <text x="320" y="152" text-anchor="middle" font-size="24" fill="#fff">GOAL</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide" data-title="まとめ" aria-hidden="true">
+      <h2>まとめ & 次のステップ</h2>
+      <div class="grid">
+        <div class="card">
+          <ul>
+            <li>公立も私立も、どちらも良いところがある。</li>
+            <li>私立は<strong>夢の種が見つかりやすい環境</strong>を選べる。</li>
+            <li>まずは一緒に学校を見に行って、気持ちを確かめよう。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <b>行動リスト</b>
+          <ul>
+            <li>① 近隣の公立・私立を1校ずつ見学予約</li>
+            <li>② 家に帰って「よかった点」を3つずつメモ</li>
+            <li>③ 毎日の小さな習慣（読書10分／計算5分）を決める</li>
+          </ul>
+        </div>
+        <p class="muted">あなたの未来は、あなたの手の中に。いっしょにえらんでいこう。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="dots" id="dots" aria-label="ページ送りのインジケータ"></div>
+    <div class="muted" id="titleHint"></div>
+  </footer>
+</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const bar = document.getElementById('bar');
+  const dotsWrap = document.getElementById('dots');
+  const titleHint = document.getElementById('titleHint');
+  const total = slides.length;
+
+  // dots
+  slides.forEach((_, idx)=>{
+    const b = document.createElement('button');
+    b.className = 'dot';
+    b.type = 'button';
+    b.setAttribute('aria-label', (idx+1) + '枚目へ');
+    b.addEventListener('click', ()=>go(idx));
+    dotsWrap.appendChild(b);
+  });
+
+  const update = ()=>{
+    slides.forEach((s, idx)=>{
+      s.setAttribute('aria-hidden', idx===i? 'false':'true');
+      s.classList.toggle('prev', idx<i);
+    });
+    btnPrev.disabled = (i===0);
+    btnNext.disabled = (i===total-1);
+    bar.style.width = ((i+1)/total*100).toFixed(1)+'%';
+    [...dotsWrap.children].forEach((d, idx)=>{
+      d.setAttribute('aria-current', idx===i? 'true':'false');
+    });
+    titleHint.textContent = (i+1)+' / '+total+'｜'+(slides[i].dataset.title||'');
+    history.replaceState(null,'','#'+(i+1));
+  };
+
+  const go = (idx)=>{ i = Math.max(0, Math.min(total-1, idx)); update(); };
+  const next = ()=>go(i+1);
+  const prev = ()=>go(i-1);
+
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+  document.getElementById('btnPrint').addEventListener('click', ()=>window.print());
+
+  // Keyboard & swipe
+  addEventListener('keydown', (e)=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)) next();
+    if(['ArrowLeft','PageUp','Backspace'].includes(e.key)) prev();
+  });
+  let sx=0, sy=0;
+  addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) (dx<0? next(): prev());
+  }, {passive:true});
+
+  // Deep-link to #n
+  const hash = Math.max(1, Math.min(total, parseInt(location.hash.replace('#',''))||1));
+  go(hash-1);
+
+  // Respect reduced motion users on first load
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+    slides.forEach(s=>s.style.transition='none');
+    setTimeout(()=>slides.forEach(s=>s.style.transition=''),0);
+  }
+</script>
+</body>
+</html>
